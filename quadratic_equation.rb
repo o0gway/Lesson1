@@ -15,8 +15,6 @@ if d >= 0
   x2 = (-b - result_d) / (2 * a)
 end
 
-
-
 if d < 0
   puts "Корней нет"
 elsif d == 0
