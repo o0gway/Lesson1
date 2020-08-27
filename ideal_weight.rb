@@ -12,7 +12,7 @@ print "Уважаемый #{user_name} ваш идеальный вес: #{ideal
 puts
 
 if ideal_user_weight < 0
-	puts "Ваш вес уже оптимальный"
+  puts "Ваш вес уже оптимальный"
 end
 
 
