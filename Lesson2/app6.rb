@@ -5,16 +5,14 @@ puts '*' * 80
 puts
 
 total_price_for_all_products = 0
-car = Hash.new
+car = {}
 
 loop do
 
   print 'Пожалуйста введите название товара (для выхода введите <<stop>>): ' 
   product = gets.chomp.capitalize
-  if product == 'Stop'
-    break
-  end
-
+  break if product == 'Stop'
+    
   print 'Пожалуйста введите цену товара: '
   price = gets.to_f
 

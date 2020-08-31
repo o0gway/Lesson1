@@ -2,8 +2,12 @@
 
 alphabet = ('а'..'я').to_a
 
+vowels = /[аеёиоуыэюя]/
 
+alphabet_with_vowels = {}
 
-alphabet.each_with_index do |v, i| 
-  puts "#{i + 1}: #{v}" if v =~ /[аеёиоуыэюя]/  
+alphabet.each.with_index(1) do |letter, index| 
+  alphabet_with_vowels[index] = letter if letter =~ vowels
 end
+
+alphabet_with_vowels.each { |index, letter| puts "#{index}: #{letter}" }
