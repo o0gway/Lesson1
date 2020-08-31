@@ -5,36 +5,41 @@ puts '*' * 80
 puts
 
 total_price_for_all_products = 0
-car = {}
+car = Hash.new
 
 loop do
 
-  print 'Пожалуйста введите название товара: ' 
+  print 'Пожалуйста введите название товара (для выхода введите <<stop>>): ' 
   product = gets.chomp.capitalize
   if product == 'Stop'
-    puts
-    puts '*' * 80
-    puts "Итоговая сумма всех товаров в корзине: #{total_price_for_all_products}"
-    puts
-  break
+    break
   end
 
   print 'Пожалуйста введите цену товара: '
   price = gets.to_f
 
   print 'Пожалуйста введите кол-во товара: '
-  pcs = gets.to_i
+  quantity = gets.to_i
 
-  car[product] = {price => pcs}
-  total_pcs_for_googs = car[product][price]
-
-  puts "Кол-во товара #{product}: #{total_pcs_for_googs}"
+  car[product] = {price: price, quantity: quantity}
   
-  
-  price_for_one_product = car[product].keys
-  total_price_for_one_product = price_for_one_product[0] * total_pcs_for_googs
-
+  total_price_for_one_product = quantity * price
+  puts "Кол-во товара #{product}: #{quantity}"
+     
   puts "Общая стоимость товара #{product}: #{total_price_for_one_product}"
   puts
-  total_price_for_all_products += total_price_for_one_product
 end
+
+puts
+puts format("%17s %20s %10s %10s", "Товары в корзине:", "Количесто товаров:", "Цена:", "Сумма:")
+
+car.each do |key, value|
+  sum = value[:quantity] * value[:price]
+  puts format("%17s %20s %10s %10s", "#{key}", "#{value[:quantity]}", "#{value[:price]}", "#{sum}")
+  total_price_for_all_products += sum
+end 
+
+puts
+puts '*' * 80
+puts format("%80s", "Итоговая сумма всех товаров в корзине: #{total_price_for_all_products}")
+puts

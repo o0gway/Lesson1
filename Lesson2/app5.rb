@@ -1,61 +1,48 @@
 # Порядковый номер даты
-# Создаём хэш месяцев, чтобы можно было сразу получить кол-во дней в месяце
-months = {
-  1 => 31, 
-  2 => 28,
-  3 => 31,
-  4 => 30,
-  5 => 31,
-  6 => 30,
-  7 => 31,
-  8 => 31,
-  9 => 30,
-  10 => 31,
-  11 => 30,
-  12 => 31
-}
+# Создаём массив месяцев, чтобы можно было сразу получить кол-во дней в месяце
+months = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
+
 puts "*" *80
 # Получаем от пользователя его данные
 puts "\tПрограмма подсчета порядкового номера даты"
 puts "*" *80
 
 print "Пожалуйста введите день: "
-user_day = gets.to_i
+day = gets.to_i
 
 print "Пожалуйста введите месяц(цифрой): "
-user_month = gets.to_i - 1 # Отнимаем сразу один месяц, так как текущий уже считать не нужно
+month = gets.to_i - 1
 
 print "Пожалуйста введите год: "
-user_year = gets.to_i
+year = gets.to_i
 
 sum_months = 0 # Переменная для суммы всех дней, которые будут суммироваться в зависимости от выбора порядкового месяца пользователя
 
 # Задаем февралю месяцу кол-во дней в зависимости от того год високосный или нет
-if user_year % 4 == 0
-  if user_year % 100 == 0
-     if user_year % 400 == 0
-      months[2] += 1
+if year % 4 == 0
+  if year % 100 == 0
+     if year % 400 == 0
+      months[1] += 1
      end
   else
-     months[2] += 0
+     months[1] += 0
   end
 else 
-  months[2] += 0
+  months[1] += 0
 end
 
 # Суммируем дни 
-while user_month != 0
-  sum_months += months[user_month]
-  user_month -= 1
-end
+# while month != 0
+#   sum_months += months[month]
+#   month -= 1
+# end
+###################################
+#New code
+sum_months = months.take(month).sum
+
 
 # Вычисляем наш порядковый номер даты
-index_day = user_day + sum_months
-
+#index_day = day + sum_months
+index_day = day + sum_months
 puts "*" *80
 puts "Порядковый номер даты: #{index_day}"
-
-
-
-
- 
