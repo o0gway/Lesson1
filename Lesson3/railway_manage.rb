@@ -1,28 +1,28 @@
 #Управление железной дорогой
 class Station
-  attr_reader :station_name, :show_trains
+  attr_reader :station_name, :trains
 
   def initialize(station_name)
     @station_name = station_name
-    @show_trains = []
+    @trains = []
   end
 
   def arrival(train)
-    @show_trains << train 
+    @trains << train 
   end
 
   def send_train(train)
-    @show_trains.delete(train)
+    @trains.delete(train)
   end
 
   def show_trains_by_type
-    self.show_trains.each do |train|
-      if train.inspect.include?('cargo')
+    self.trains.each do |train|
+      if train.cargo?
         puts "Номера грузовых поездов:"
-        puts train.instance_variable_get(:@number)
+        puts train.number
       else
         puts "Номера пассажирских поездов:"
-        puts train.instance_variable_get(:@number)
+        puts train.number
       end
     end
   end
@@ -48,7 +48,7 @@ end
 
 class Train
   attr_accessor :speed
-  attr_reader :quantity_of_railway_carriages
+  attr_reader :quantity_of_railway_carriages, :number, :type
 
   def initialize(number, type, quantity_of_railway_carriages)
     @number = number
@@ -57,12 +57,20 @@ class Train
     @current_station = 0
   end
 
+  def cargo?
+    self.type == 'cargo'
+  end
+  
   def stop
     @speed = 0
   end
 
+  def stoped?
+    @speed == 0
+  end  
+
   def add_railway_carriages(add)
-    @quantity_of_railway_carriages += add if @speed == 0
+    @quantity_of_railway_carriages += add if stoped?
   end
 
   def route(route_name)
@@ -70,9 +78,9 @@ class Train
   end 
 
   def current_station
-    puts "Предыдущая станция: #{self.back_station}" if @route.index(@route[@current_station]) != 0
+    puts "Предыдущая станция: #{self.back_station}" if first_station?
     puts "Текущая станция: #{@route[@current_station]}"
-    puts "Следующая станция: #{self.next_station}" if @route.index(@route[@current_station]) != -1
+    puts "Следующая станция: #{self.next_station}" if last_station?
   end
 
   def forward
@@ -92,6 +100,14 @@ class Train
   def back_station
     @route[@current_station - 1]
   end
+
+  def last_station?
+    @route.index(@route[@current_station]) != -1
+  end
+
+  def first_station?
+    @route.index(@route[@current_station]) != 0
+  end
 end
 
 station_1 = Station.new('Station1')
@@ -105,12 +121,12 @@ train2 = Train.new(456, 'passengers', 7)
 train1.route(st1_to_st2)
 train2.route(st1_to_st2)
 
-p station_1.show_trains
+p station_1.trains
 
 station_1.arrival(train1)
 station_1.arrival(train2)
 
-p station_1.show_trains
+p station_1.trains
 
 station_1.show_trains_by_type
 
