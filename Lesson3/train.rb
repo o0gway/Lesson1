@@ -24,8 +24,8 @@ class Train
     @quantity_of_railway_carriages += add if stoped?
   end
 
-  def route(route_name)
-    @route = route_name.trains
+  def route(route)
+    @route = route.stations
     @current_station = 0
     @route[@current_station].arrival(self)
   end 
