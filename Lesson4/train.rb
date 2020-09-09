@@ -2,10 +2,11 @@ class Train
   attr_accessor :speed
   attr_reader :number, :type
 
-  def initialize(number)
+  def initialize(number, type)
     @number = number
+    @type = type
   end
- 
+
   def stop
     @speed = 0
   end
@@ -49,31 +50,10 @@ class Train
   end
 
   def last_station?
-    @route.index(@route[@current_station]) != -1 && @route[@current_station + 1] != nil
+    @route.index(@route.stations[@current_station]) != -1 && @route[@current_station + 1] != nil
   end
 
   def first_station?
     @route.index(@route[@current_station]) != 0 && @route[@current_station - 1] != nil
   end
 end
-
-class PassengerTrain < Train
-  def initialize
-    @type = 'Passenger'
-  end
-
-  def type
-    @type
-  end 
-end
-
-class CargoTrain < Train
-  def initialize
-    @type = 'Cargo'
-  end
-
-  def type
-    @type
-  end 
-end
-

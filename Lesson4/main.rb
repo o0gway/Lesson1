@@ -1,51 +1,179 @@
 #Управление железной дорогой
 require_relative 'train.rb'
+require_relative 'passenger_train'
+require_relative 'cargo_train'
 require_relative 'route.rb'
 require_relative 'station.rb'
 require_relative 'wagon.rb'
+require_relative 'passenger_wagon.rb'
+require_relative 'cargo_wagon.rb'
+require 'byebug'
 
-puts "Программа управлением железной дорогой"
-puts '*' * 80
+class Interface
+  def initialize
+    @stations = []
+    @routes = []
+    @trains = []
+  end
+  
+  puts "Программа управлением железной дорогой"
+  puts '*' * 80
 
-stations
+  def run
+    loop do
+      menu
+      user_choice = gets.to_i
 
-loop do
-  print "Выберите один из вариантов действий: "
-  user_choice = gets.to_i
-  puts
-  puts "1. Добавить станцию"
-  puts "2. Добавить поезд"
-  puts "3. Добавить маштрут"
-  puts "4. Назначать маршрут поезду"
-  puts "5. Добавить вагоны к поезду"
-  puts "6. Отцепить вагон от поезда"
-  puts "7. Проехать на одну станцию вперед"
-  puts "8. Проехать на одну станцию назад"
-  puts "9. Просматривать список станций и список поездов на станции"
-  puts "0. Выйти из программы"
+      case user_choice
+      when 1
+        create_station
+      when 2
+        create_train
+      when 3
+        manage_route
+      when 4
+        add_route_to_train
+      when 5
+        #
+      when 6
+        #   
+      when 7
+        move_forward
+      when 8
+        move_back
+      when 9
+        selected_station = self.select_station
+        
+      when 0
+        break
+      else
+        puts "Такого действия не существует"
+      end
+    end
+  end
 
-  case user_choice
-  when 1
-    #
-  when 2
-    #
-  when 3
-    #
-  when 4
-    #
-  when 5
-    #
-  when 6
-    #   
-  when 7
-    #
-  when 8
-    #
-  when 9
-    #                   
-  when 0
-    break
-  else
-    puts "Введен не верный ответ!"
+  def menu
+    puts
+    puts "1. Добавить станцию"
+    puts "2. Добавить поезд"
+    puts "3. Управление маштрутом"
+    puts "4. Назначить маршрут поезду"
+    puts "5. Добавить вагоны к поезду"
+    puts "6. Отцепить вагон от поезда"
+    puts "7. Проехать на одну станцию вперед"
+    puts "8. Проехать на одну станцию назад"
+    puts "9. Вывести список станций и список поездов на станции"
+    puts "0. Выйти из программы"
+    puts
+    print "Выберите один из вариантов действий: "
+  end
+
+  def create_station
+    print 'Введите название станции: '
+    name = gets.chomp
+    @stations << Station.new(name)
+  end
+
+  def create_train
+    puts
+    puts "1. Пассажирский"
+    puts "2. Грузовой"
+    print 'Выберите тип поезда: '
+    type = gets.to_i
+    if type == 1
+      @trains << PassengerTrain.new(add_train_number, 'Passenger')
+    else
+      @trains << CargoTrain.new(add_train_number, 'Cargo')
+    end
+  end
+
+  def manage_route
+    puts '1. Добавить новый маршрут'
+    puts '2. Изменить маршрут'
+    puts '3. Вернуться назад'
+    print 'Выберите дейсвтие: '
+    user_choice = gets.to_i
+    case user_choice
+    when 1
+      create_route
+    when 2
+      change_route
+    when 3
+      menu
+    end 
+  end
+  
+  def select_station(message = 'Выберите станцию: ')
+    show_stations
+    print message
+    number = gets.to_i
+    @stations[number -1]
+  end
+
+  def show_stations
+    @stations.each.with_index(1) do |station, index|
+      puts "#{index}. #{station.name}"
+    end
+  end
+
+  def create_route
+    station1 = select_station('Выберите начальную станцию: ')
+    station2 = select_station('Выберите конечную станцию: ')
+    @routes << Route.new(station1, station2)
+  end
+
+  def change_route
+    show_routes
+    puts '1. Добавить станцию в маршрут'
+    puts '2. Удалить станцию в маршруте'
+    puts '3. Вернуться назад'
+    print 'Выберите действие: '
+    number = gets.to_i
+    menu if number == 3
+    Route.new.add_additional_station(number)
+    Route.new.remove_additional_station(number)
+  end
+
+  def show_routes
+    @routes.each.with_index(1) do |route, index|
+      puts "#{index}. #{route.stations}"
+    end
+  end
+
+  def show_trains
+    @trains.each.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train.number}, тип поезда: #{train.type}"}
+  end
+
+  def add_route_to_train
+    selected_train = self.select_train # Выбираем поезд
+    show_routes
+    print 'Выберите машрут: '
+    route = gets.to_i
+    select_route = @routes[route - 1]
+    selected_train.route(select_route)
+  end
+
+  def move_forward
+    selected_train = self.select_train
+    selected_train.forward
+  end
+
+  def move_back
+    selected_train = self.select_train
+    selected_train.back
+  end
+
+  def select_train
+    show_trains
+    print 'Выберите поезд: '
+    number = gets.to_i
+    select_train = @trains[number - 1]
+  end
+
+  def add_train_number
+    print "Введите номер поезда: "
+    number = gets.to_i
   end
 end
+
+Interface.new.run

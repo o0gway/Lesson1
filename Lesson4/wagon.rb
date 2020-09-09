@@ -1,5 +1,2 @@
-class CargoWagon
-end
-
-class PassengerWagon
+class Wagon
 end
