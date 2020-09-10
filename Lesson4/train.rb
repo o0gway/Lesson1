@@ -50,6 +50,9 @@ class Train
     @route[@current_station - 1]
   end
 
+  private 
+
+  # Используются только в этом классе
   def last_station?
     @route.index(@route.stations[@current_station]) != -1 && @route[@current_station + 1] != nil
   end

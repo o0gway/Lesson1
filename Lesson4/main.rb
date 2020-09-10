@@ -39,16 +39,17 @@ class Interface
         del_wagon
       when 7
         move_forward
+        press_enter_to_continue
       when 8
         move_back
+        press_enter_to_continue
       when 9
-        selected_station = self.select_station
+        selected_station = select_station
         #byebug
         puts
         puts "Поездов на станции: "
         selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
-        print "Нажими любую клавишу, чтобы продложить..."
-        gets
+        press_enter_to_continue
       when 0
         menu
       when 99
@@ -59,10 +60,37 @@ class Interface
     end
   end
 
+  private
+
+  # Нет смысла обращаться к меню напрямую, оно все равно вызывается из другого метода и никогда напрямую
+  def menu
+    puts
+    puts "1. Добавить станцию"
+    puts "2. Добавить поезд"
+    puts "3. Управление маштрутом"
+    puts "4. Назначить маршрут поезду"
+    puts "5. Добавить вагон к поезду"
+    puts "6. Отцепить вагон от поезда"
+    puts "7. Проехать на одну станцию вперед"
+    puts "8. Проехать на одну станцию назад"
+    puts "9. Вывести список станций и список поездов на станции"
+    puts "99. Выйти из программы"
+    puts
+    print "Выберите один из вариантов действий: "
+  end
+
+  # Все следующие методы могут работать без секции private
   def create_station
     print 'Введите название станции: '
     name = gets.chomp
     @stations << Station.new(name)
+  end
+
+  def select_station(message = 'Выберите станцию: ')
+    show_stations
+    print message
+    number = gets.to_i
+    @stations[number - 1]
   end
 
   def create_train
@@ -95,13 +123,6 @@ class Interface
     end 
   end
   
-  def select_station(message = 'Выберите станцию: ')
-    show_stations
-    print message
-    number = gets.to_i
-    @stations[number - 1]
-  end
-
   def show_stations
     @stations.each.with_index(1) do |station, index|
       puts "#{index}. #{station.name}"
@@ -115,7 +136,7 @@ class Interface
   end
 
   def change_route
-    selected_route = self.select_route
+    selected_route = select_route
     puts '1. Добавить станцию в маршрут'
     puts '2. Удалить станцию в маршруте'
     puts '3. Вернуться назад'
@@ -145,21 +166,19 @@ class Interface
   end
 
   def add_route_to_train
-    selected_train = self.select_train # Выбираем поезд
-    selected_route = self.select_route # Выбирем маршрут
+    selected_train = select_train # Выбираем поезд
+    selected_route = select_route # Выбирем маршрут
     selected_train.route(selected_route)
   end
 
   def move_forward
-    selected_train = self.select_train
+    selected_train = select_train
     selected_train.forward
-    selected_train.current_station
   end
 
   def move_back
-    selected_train = self.select_train
+    selected_train = select_train
     selected_train.back
-    selected_train.current_station
   end
 
   def select_train
@@ -182,7 +201,7 @@ class Interface
   end
 
   def add_wagon
-    selected_train = self.select_train
+    selected_train = select_train
     quantity_wagons = selected_train.wagons.size + 1
 
     if selected_train.type == "Passenger"
@@ -199,7 +218,7 @@ class Interface
   end
 
   def del_wagon
-    selected_train = self.select_train
+    selected_train = select_train
     quantity_wagons = selected_train.wagons.size
    
     if quantity_wagons.zero?
@@ -212,25 +231,10 @@ class Interface
     end
   end
 
-  private
-
-  # Нет смысла обращаться к меню напрямую, оно все равно вызывается из другого метода и никогда напрямую
-  def menu
-    puts
-    puts "1. Добавить станцию"
-    puts "2. Добавить поезд"
-    puts "3. Управление маштрутом"
-    puts "4. Назначить маршрут поезду"
-    puts "5. Добавить вагон к поезду"
-    puts "6. Отцепить вагон от поезда"
-    puts "7. Проехать на одну станцию вперед"
-    puts "8. Проехать на одну станцию назад"
-    puts "9. Вывести список станций и список поездов на станции"
-    puts "99. Выйти из программы"
-    puts
-    print "Выберите один из вариантов действий: "
+  def press_enter_to_continue
+    print "Нажими любую клавишу, чтобы продложить..."
+    gets
   end
-
 end
 
 Interface.new.run
