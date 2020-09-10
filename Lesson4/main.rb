@@ -34,38 +34,29 @@ class Interface
       when 4
         add_route_to_train
       when 5
-        #
+        add_wagon
       when 6
-        #   
+        del_wagon
       when 7
         move_forward
       when 8
         move_back
       when 9
         selected_station = self.select_station
-        
+        #byebug
+        puts
+        puts "Поездов на станции: "
+        selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
+        print "Нажими любую клавишу, чтобы продложить..."
+        gets
       when 0
+        menu
+      when 99
         break
       else
         puts "Такого действия не существует"
       end
     end
-  end
-
-  def menu
-    puts
-    puts "1. Добавить станцию"
-    puts "2. Добавить поезд"
-    puts "3. Управление маштрутом"
-    puts "4. Назначить маршрут поезду"
-    puts "5. Добавить вагоны к поезду"
-    puts "6. Отцепить вагон от поезда"
-    puts "7. Проехать на одну станцию вперед"
-    puts "8. Проехать на одну станцию назад"
-    puts "9. Вывести список станций и список поездов на станции"
-    puts "0. Выйти из программы"
-    puts
-    print "Выберите один из вариантов действий: "
   end
 
   def create_station
@@ -80,6 +71,7 @@ class Interface
     puts "2. Грузовой"
     print 'Выберите тип поезда: '
     type = gets.to_i
+    
     if type == 1
       @trains << PassengerTrain.new(add_train_number, 'Passenger')
     else
@@ -107,7 +99,7 @@ class Interface
     show_stations
     print message
     number = gets.to_i
-    @stations[number -1]
+    @stations[number - 1]
   end
 
   def show_stations
@@ -123,20 +115,28 @@ class Interface
   end
 
   def change_route
-    show_routes
+    selected_route = self.select_route
     puts '1. Добавить станцию в маршрут'
     puts '2. Удалить станцию в маршруте'
     puts '3. Вернуться назад'
     print 'Выберите действие: '
     number = gets.to_i
-    menu if number == 3
-    Route.new.add_additional_station(number)
-    Route.new.remove_additional_station(number)
+    menu if number == 0
+    case number
+    when 1
+      selected_station = select_station
+      selected_route.add_additional_station(selected_station)
+    when 2
+      selected_station = select_station
+      selected_route.remove_additional_station(selected_station)
+    when 3
+      menu
+    end
   end
 
   def show_routes
     @routes.each.with_index(1) do |route, index|
-      puts "#{index}. #{route.stations}"
+      puts "#{index}. #{route.stations[0].name} --> #{route.stations[-1].name}"
     end
   end
 
@@ -146,21 +146,20 @@ class Interface
 
   def add_route_to_train
     selected_train = self.select_train # Выбираем поезд
-    show_routes
-    print 'Выберите машрут: '
-    route = gets.to_i
-    select_route = @routes[route - 1]
-    selected_train.route(select_route)
+    selected_route = self.select_route # Выбирем маршрут
+    selected_train.route(selected_route)
   end
 
   def move_forward
     selected_train = self.select_train
     selected_train.forward
+    selected_train.current_station
   end
 
   def move_back
     selected_train = self.select_train
     selected_train.back
+    selected_train.current_station
   end
 
   def select_train
@@ -170,10 +169,68 @@ class Interface
     select_train = @trains[number - 1]
   end
 
+  def select_route
+    show_routes
+    print 'Выберите машрут: '
+    route = gets.to_i
+    select_route = @routes[route - 1]
+  end
+
   def add_train_number
     print "Введите номер поезда: "
     number = gets.to_i
   end
+
+  def add_wagon
+    selected_train = self.select_train
+    quantity_wagons = selected_train.wagons.size + 1
+
+    if selected_train.type == "Passenger"
+      print "Добавить вагон? (Y/N) "
+      answer = gets.chomp.downcase
+      selected_train.wagons << PassengerWagon.new(quantity_wagons) if answer == 'y'
+      puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
+    elsif selected_train.type == "Cargo"
+      print "Добавить вагон? (Y/N) "
+      answer = gets.chomp.downcase
+      selected_train.wagons << CargoWagon.new(quantity_wagons) if answer == 'y'
+      puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
+    end
+  end
+
+  def del_wagon
+    selected_train = self.select_train
+    quantity_wagons = selected_train.wagons.size
+   
+    if quantity_wagons.zero?
+       puts "У этого поезда нет вагонов" 
+    else
+      print "Удалить вагон? (Y/N) "
+      answer = gets.chomp.downcase
+      selected_train.wagons.pop if answer == 'y'
+      puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
+    end
+  end
+
+  private
+
+  # Нет смысла обращаться к меню напрямую, оно все равно вызывается из другого метода и никогда напрямую
+  def menu
+    puts
+    puts "1. Добавить станцию"
+    puts "2. Добавить поезд"
+    puts "3. Управление маштрутом"
+    puts "4. Назначить маршрут поезду"
+    puts "5. Добавить вагон к поезду"
+    puts "6. Отцепить вагон от поезда"
+    puts "7. Проехать на одну станцию вперед"
+    puts "8. Проехать на одну станцию назад"
+    puts "9. Вывести список станций и список поездов на станции"
+    puts "99. Выйти из программы"
+    puts
+    print "Выберите один из вариантов действий: "
+  end
+
 end
 
 Interface.new.run

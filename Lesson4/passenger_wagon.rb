@@ -1,3 +1,2 @@
 class PassengerWagon < Wagon 
-
 end
