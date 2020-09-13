@@ -61,7 +61,7 @@ class Interface
         selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
         press_enter_to_continue
       when 10
-        byebug
+        #byebug
         find_train
         press_enter_to_continue
       when 0
