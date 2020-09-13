@@ -61,7 +61,7 @@ class Interface
         selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
         press_enter_to_continue
       when 10
-        #byebug
+        byebug
         find_train
         press_enter_to_continue
       when 0
@@ -172,7 +172,7 @@ class Interface
 
   def show_routes
     @routes.each.with_index(1) do |route, index|
-      puts "#{index}. #{route.stations[0].name} --> #{route.stations[-1].name}"
+      puts "#{index}. #{route.stations.first.name} --> #{route.stations.last.name}"
     end
   end
 
