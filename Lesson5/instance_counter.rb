@@ -12,7 +12,6 @@ module InstanceCounter
     
     def instances
       @object_list ||= 0
-      @object_list
     end
   end
 

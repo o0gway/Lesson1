@@ -16,6 +16,7 @@ class Station
   def initialize(name)
     @name = name
     @trains_list = []
+    self.class.all= self
     register_instance
   end
 

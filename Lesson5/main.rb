@@ -10,11 +10,10 @@ require_relative 'cargo_wagon.rb'
 require 'byebug'
 
 class Interface
-
   @@trains = {}
   
   def initialize
-    Station.all
+    @stations = []
     @routes = []
   end
 
@@ -94,14 +93,14 @@ class Interface
   def create_station
     print 'Введите название станции: '
     name = gets.chomp
-    Station.all=(Station.new(name))
+    @stations << Station.new(name)
   end
 
   def select_station(message = 'Выберите станцию: ')
     show_stations
     print message
     number = gets.to_i
-    Station.all[number - 1]
+    @stations[number - 1]
   end
 
   def create_train
@@ -137,7 +136,7 @@ class Interface
   end
   
   def show_stations
-    Station.all.each.with_index(1) do |station, index|
+    @stations.each.with_index(1) do |station, index|
       puts "#{index}. #{station.name}"
     end
   end
