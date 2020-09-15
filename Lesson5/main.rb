@@ -11,7 +11,7 @@ require 'byebug'
 
 class Interface
 
-  @@trains = []
+  @@trains = {}
   
   def initialize
     Station.all
@@ -22,10 +22,6 @@ class Interface
     @@trains
   end
 
-  # def self.trains=(train)
-  #   @@trains = train
-  # end
-  
   puts "Программа управлением железной дорогой"
   puts '*' * 80
 
@@ -55,13 +51,13 @@ class Interface
         press_enter_to_continue
       when 9
         selected_station = select_station
-        #byebug
+        byebug
         puts
         puts "Поездов на станции: "
         selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
         press_enter_to_continue
       when 10
-        #byebug
+        byebug
         find_train
         press_enter_to_continue
       when 0
@@ -116,9 +112,11 @@ class Interface
     type = gets.to_i
     
     if type == 1
-      @@trains << PassengerTrain.new(add_train_number, 'Passenger', add_manufacturer)
+      @@trains[add_train_number] = PassengerTrain.new('Passenger', add_manufacturer)
+    elsif type == 2
+      @@trains[add_train_number] = CargoTrain.new('Cargo', add_manufacturer)
     else
-      @@trains << CargoTrain.new(add_train_number, 'Cargo', add_manufacturer)
+      menu
     end
   end
 

@@ -5,25 +5,22 @@ class Train
   include Manufacturer
   include InstanceCounter
   attr_accessor :speed, :wagons
-  attr_reader :number, :type
+  attr_reader :type
 
-  def initialize(number, type, company)
-    @number = number
+  def initialize(type, company)
+    #@number = number
     @type = type
     @company = company
     @wagons = []
     register_instance
   end
 
-  def self.find(train)
-    Interface.trains.each do |item|
-      if item.number == train
-        puts 'Поезд найден'
-        train = nil
-        break
-      end
-    end
-    puts 'Поезд не найден' unless train.nil?
+  def self.find(train) 
+    if Interface.trains.key?(train)
+      puts 'Поезд найден'
+    else
+      puts 'Поезд не найден'
+    end 
   end
 
   def stop

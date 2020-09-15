@@ -11,8 +11,8 @@ module InstanceCounter
     attr_accessor :object_list
     
     def instances
-      @object_list ||= []
-      @object_list.size
+      @object_list ||= 0
+      @object_list
     end
   end
 
@@ -21,8 +21,8 @@ module InstanceCounter
     protected
     
     def register_instance
-      self.class.object_list ||= []
-      self.class.object_list << self
+      self.class.object_list ||= 0
+      self.class.object_list += 1
     end
   end
 end
