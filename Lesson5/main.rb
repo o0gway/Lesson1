@@ -10,15 +10,10 @@ require_relative 'cargo_wagon.rb'
 require 'byebug'
 
 class Interface
-  @@trains = {}
-  
+    
   def initialize
     @stations = []
     @routes = []
-  end
-
-  def self.trains
-    @@trains
   end
 
   puts "Программа управлением железной дорогой"
@@ -111,11 +106,9 @@ class Interface
     type = gets.to_i
     
     if type == 1
-      number = add_train_number
-      @@trains[number] = PassengerTrain.new(number, 'Passenger', add_manufacturer)
+      PassengerTrain.new(add_train_number, 'Passenger', add_manufacturer)
     elsif type == 2
-      number = add_train_number
-      @@trains[number] = CargoTrain.new(number, 'Cargo', add_manufacturer)
+      CargoTrain.new(add_train_number, 'Cargo', add_manufacturer)
     else
       menu
     end
@@ -176,7 +169,7 @@ class Interface
   end
 
   def show_trains
-    @@trains.each_key.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train}"}
+    Train.trains.each_key.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train}"}
   end
 
   def add_route_to_train
@@ -199,7 +192,7 @@ class Interface
     show_trains
     print 'Выберите поезд: '
     number = gets.to_i
-    select_train = @@trains
+    select_train = Train.trains
     select_train = select_train.to_a
     select_train = select_train[number - 1][1]
   end

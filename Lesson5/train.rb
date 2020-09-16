@@ -6,17 +6,23 @@ class Train
   include InstanceCounter
   attr_accessor :speed, :wagons
   attr_reader :type, :number
+  @@trains = {}
 
   def initialize(number, type, company)
     @number = number
     @type = type
     @company = company
     @wagons = []
+    @@trains[number] = self
     register_instance
   end
 
-  def self.find(train) 
-    if Interface.trains.key?(train)
+  def self.trains
+    @@trains
+  end
+
+  def self.find(number) 
+    if @@trains[number]
       puts 'Поезд найден'
     else
       puts 'Поезд не найден'
