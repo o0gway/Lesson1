@@ -50,13 +50,13 @@ class Interface
         press_enter_to_continue
       when 9
         selected_station = select_station
-        byebug
+        #byebug
         puts
         puts "Поездов на станции: "
         selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
         press_enter_to_continue
       when 10
-        byebug
+        #byebug
         find_train
         press_enter_to_continue
       when 0
@@ -111,9 +111,11 @@ class Interface
     type = gets.to_i
     
     if type == 1
-      @@trains[add_train_number] = PassengerTrain.new('Passenger', add_manufacturer)
+      number = add_train_number
+      @@trains[number] = PassengerTrain.new(number, 'Passenger', add_manufacturer)
     elsif type == 2
-      @@trains[add_train_number] = CargoTrain.new('Cargo', add_manufacturer)
+      number = add_train_number
+      @@trains[number] = CargoTrain.new(number, 'Cargo', add_manufacturer)
     else
       menu
     end
@@ -174,7 +176,7 @@ class Interface
   end
 
   def show_trains
-    @@trains.each.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train.number}, тип поезда: #{train.type}"}
+    @@trains.each_key.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train}"}
   end
 
   def add_route_to_train
@@ -197,7 +199,9 @@ class Interface
     show_trains
     print 'Выберите поезд: '
     number = gets.to_i
-    select_train = @@trains[number - 1]
+    select_train = @@trains
+    select_train = select_train.to_a
+    select_train = select_train[number - 1][1]
   end
 
   def select_route

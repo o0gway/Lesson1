@@ -5,10 +5,10 @@ class Train
   include Manufacturer
   include InstanceCounter
   attr_accessor :speed, :wagons
-  attr_reader :type
+  attr_reader :type, :number
 
-  def initialize(type, company)
-    #@number = number
+  def initialize(number, type, company)
+    @number = number
     @type = type
     @company = company
     @wagons = []
