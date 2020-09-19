@@ -33,12 +33,12 @@ class Train
     end 
   end
 
-  def valid?
-    validate!
-    true
-  rescue StandardError => error
-    false
-  end
+  # def valid?
+  #   validate!
+  #   true
+  # rescue StandardError => error
+  #   false
+  # end
 
   def validate!
     raise 'Номер не может быть пустым!' if number == ''

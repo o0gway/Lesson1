@@ -29,13 +29,6 @@ class Station
     @trains_list.delete(train)
   end
 
-  def valid?
-    validate!
-    true
-  rescue StandardError => error
-    false
-  end
-
   def validate!
     raise 'Название станции не может быть пустым!' if name == ''
   end

@@ -17,6 +17,13 @@ module InstanceCounter
 
   module InstanceMethods
 
+  def valid?
+    validate!
+    true
+  rescue StandardError => error
+    false
+  end
+
     protected
     
     def register_instance
