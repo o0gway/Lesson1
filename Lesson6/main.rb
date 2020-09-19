@@ -46,18 +46,7 @@ class Interface
         move_back
         press_enter_to_continue
       when 9
-        begin
-          raise 'У вас нет хотя бы одной созданной станции' if @stations.size.zero?
-          selected_station = select_station
-          #byebug
-          puts
-          puts "Поездов на станции: "
-          selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
-          puts
-          press_enter_to_continue
-        rescue StandardError => error
-          puts "Error: #{error.message}"
-        end
+        show_trains_on_station
       when 10
         #byebug
         find_train
@@ -273,6 +262,21 @@ class Interface
       answer = gets.chomp.downcase
       selected_train.wagons.pop if answer == 'y'
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
+    end
+  end
+
+  def show_trains_on_station
+    begin
+      raise 'У вас нет хотя бы одной созданной станции' if @stations.size.zero?
+      selected_station = select_station
+      #byebug
+      puts
+      puts "Поездов на станции: "
+      selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
+      puts
+      press_enter_to_continue
+    rescue StandardError => error
+      puts "Error: #{error.message}"
     end
   end
 

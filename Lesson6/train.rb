@@ -13,7 +13,7 @@ class Train
     @number = number
     @type = type
     @company = company
-    valid?
+    validate!
     @wagons = []
     @@trains[number] = self
     register_instance
@@ -33,21 +33,17 @@ class Train
   end
 
   def valid?
-    validate_train_number!
-    validate_train_manufacturer!
+    validate!
     true
   rescue StandardError => error
     false
   end
 
-  def validate_train_number!
+  def validate!
     raise 'Номер не может быть пустым!' if number == ''
     raise 'Не правильный формат номера!' if number !~ NUMBER_FORMAT
+    raise 'Название производителя не может быть пустым!' if company == ''     
   end
-
-  def validate_train_manufacturer!
-    raise 'Название производителя не может быть пустым!' if company == ''
-  end  
 
   def stop
     @speed = 0
