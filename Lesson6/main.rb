@@ -85,7 +85,6 @@ class Interface
   def create_station
     print 'Введите название станции: '
     name = gets.chomp.strip.upcase
-    raise 'Название станции не может быть пустым!' if name == ''
     @stations << Station.new(name)
   rescue StandardError => error
     puts "Error: #{error.message}"
@@ -113,27 +112,19 @@ class Interface
     else
       menu
     end
+  rescue StandardError => error
+    puts "Error: #{error.message}"
+    retry
   end
 
   def add_train_number
     print "Введите номер поезда: "
     number = gets.strip.upcase
-    raise 'Номер не может быть пустым!' if number == ''
-    raise 'Не правильный формат номера!' if number !~ NUMBER_FORMAT
-    number
-  rescue StandardError => error
-    puts "Error: #{error.message}"
-    retry
   end
 
   def add_manufacturer
     print "Введите производителя: "
     manufacturer = gets.strip
-    raise 'Название производителя не может быть пустым!' if manufacturer == ''
-    manufacturer
-  rescue StandardError => error
-    puts "Error: #{error.message}"
-    retry
   end
 
   def manage_route
@@ -200,11 +191,11 @@ class Interface
   end
 
   def add_route_to_train
-    raise 'У вас нет ни одного созданного поезда или маршрута' if Train.trains.empty? && @routes.size.zero?
+    raise 'У вас нет ни одного созданного поезда или маршрута' if Train.trains.empty? || @routes.size.zero?
     selected_train = select_train # Выбираем поезд
     selected_route = select_route # Выбирем маршрут
     selected_train.route(selected_route)
-  rescue StandardError => error
+  rescue => error
     puts "Error: #{error.message}"
   end
 

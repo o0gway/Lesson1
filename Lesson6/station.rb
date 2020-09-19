@@ -15,8 +15,8 @@ class Station
   
   def initialize(name)
     @name = name
+    validate!
     @trains_list = []
-    valid?
     self.class.all= self
     register_instance
   end
@@ -37,6 +37,6 @@ class Station
   end
 
   def validate!
-    raise 'Название станции не может быть пустым!' if number == ''
+    raise 'Название станции не может быть пустым!' if name == ''
   end
 end

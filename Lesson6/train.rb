@@ -11,6 +11,7 @@ class Train
 
   def initialize(number, type, company)
     @number = number
+    validate!
     @type = type
     @company = company
     validate!
