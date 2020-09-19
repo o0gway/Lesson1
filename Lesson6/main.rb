@@ -153,7 +153,6 @@ class Interface
     raise 'Для того чтобы создать маршрут, необходимо как минимум 2 соданные станции' if @stations.size < 2
     station1 = select_station('Выберите начальную станцию: ')
     station2 = select_station('Выберите конечную станцию: ')
-    raise 'Конечная станция не может быть такой же как начальная' if station2 == station1 
     @routes << Route.new(station1, station2)
   rescue StandardError => error
     puts "Error: #{error.message}"
