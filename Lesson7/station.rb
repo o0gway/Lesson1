@@ -32,4 +32,8 @@ class Station
   def validate!
     raise 'Название станции не может быть пустым!' if name == ''
   end
+
+  def each_train
+    trains_list.each.with_index(1) {|train, index| yield(train, index)}
+  end
 end

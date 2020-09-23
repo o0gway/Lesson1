@@ -48,7 +48,7 @@ class Interface
       when 9
         show_trains_on_station
       when 10
-        #byebug
+        byebug
         find_train
         press_enter_to_continue
       when 0
@@ -74,7 +74,7 @@ class Interface
     puts "6. Отцепить вагон от поезда"
     puts "7. Проехать на одну станцию вперед"
     puts "8. Проехать на одну станцию назад"
-    puts "9. Вывести список станций и список поездов на станции"
+    puts "9. Вывести список станций, поездов и вагонов"
     puts "10. Найти поезд по его номеру"
     puts "99. Выйти из программы"
     puts
@@ -260,11 +260,29 @@ class Interface
   def show_trains_on_station
     begin
       raise 'У вас нет хотя бы одной созданной станции' if @stations.size.zero?
-      selected_station = select_station
-      #byebug
+      puts '*' * 80
       puts
-      puts "Поездов на станции: "
-      selected_station.trains_list.each.with_index(1) {|train, index| puts "#{index}. #{train.number}"}
+      @stations.each.with_index(1) do |station, index| 
+        puts "#{index}. #{station.name}"
+        puts 'Поездов на станции: '
+        puts '-' * 80
+        station.each_train do |train, index| 
+          puts "#{index}. Номер поезда: #{train.number} / Тип поезда: #{train.type} / Количество вагонов: #{train.wagons.size}"
+          puts 'Список вагонов у поезда: '
+          train.each_wagon do |wagon, index| 
+            print "#{index}. Номер вагона: #{wagon.number} / Тип вагона: #{wagon.type} / "
+            if wagon.type == 'Пассажирский'
+              print "Количество свободных / занятых мест в вагоне: #{wagon.free_places} / #{wagon.occupied_places}"
+            else
+              print "Свободный / занятый объем в вагоне: #{wagon.free_volume} / #{wagon.occupied_volume}"
+            end
+            puts
+          end
+        puts '-' * 80
+        end
+        puts
+        puts '*' * 80
+      end
       puts
       press_enter_to_continue
     rescue StandardError => error

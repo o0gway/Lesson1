@@ -7,7 +7,7 @@ class Train
   attr_accessor :speed, :wagons
   attr_reader :type, :number, :company
   @@trains = {}
-  NUMBER_FORMAT = /^[A-Z1-9]{3}-?[A-Z1-9]{2}/
+  NUMBER_FORMAT = /^[A-Z1-9]{3}-?[A-Z1-9]{2}$/
 
   def initialize(number, type, company)
     @number = number
@@ -30,6 +30,14 @@ class Train
     else
       puts 'Поезд не найден'
     end 
+  end
+
+  def each_wagon
+    if @wagons.size.zero?
+      puts 'у поезда нет созданных вагонов'
+    else 
+      wagons.each.with_index(1) {|wagon, index| yield(wagon, index)}
+    end
   end
 
   # def valid?
