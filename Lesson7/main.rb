@@ -51,6 +51,9 @@ class Interface
         byebug
         find_train
         press_enter_to_continue
+      when 11
+        add_place_or_volume_to_train
+        press_enter_to_continue
       when 0
         menu
       when 99
@@ -76,6 +79,7 @@ class Interface
     puts "8. Проехать на одну станцию назад"
     puts "9. Вывести список станций, поездов и вагонов"
     puts "10. Найти поезд по его номеру"
+    puts "11. Занять место в пассажирском или грузовом вагоне"
     puts "99. Выйти из программы"
     puts
     print "Выберите один из вариантов действий: "
@@ -299,6 +303,30 @@ class Interface
   def press_enter_to_continue
     print "Нажими любую клавишу, чтобы продложить..."
     gets
+  end
+
+  def add_place_or_volume_to_train
+    selected_train = select_train
+    if selected_train.type == "Passenger"
+      selected_train.each_wagon do |wagon, index| 
+        print "#{index}. Номер вагона: #{wagon.number} /"
+        puts " Количество свободных / занятых мест в вагоне: #{wagon.free_places} / #{wagon.occupied_places}"
+      end 
+      print 'Выберите вагон: '
+      number = gets.to_i
+      selected_train.wagons[number - 1].take_the_place_of
+      puts 'Занято одно место в вагоне'
+    else
+      selected_train.each_wagon do |wagon, index| 
+        print "#{index}. Номер вагона: #{wagon.number} /"
+        puts "Свободный / занятый объем в вагоне: #{wagon.free_volume} / #{wagon.occupied_volume}"
+      end 
+      print 'Выберите вагон: '
+      number = gets.to_i
+      print 'Введите объём который будет занят: '
+      volume = gets.to_i
+      selected_train.wagons[number - 1].take_up_volume(volume)
+    end
   end
 end
 
