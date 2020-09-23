@@ -48,7 +48,7 @@ class Interface
       when 9
         show_trains_on_station
       when 10
-        byebug
+        #byebug
         find_train
         press_enter_to_continue
       when 11
