@@ -237,12 +237,12 @@ class Interface
     if selected_train.type == "Passenger"
       print 'Введите общее коливество мест в вагоне: '
       places = gets.to_i
-      selected_train.wagons << PassengerWagon.new(places, add_manufacturer) 
+      selected_train.wagons << PassengerWagon.new(places, add_manufacturer, "Passenger") 
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
     elsif selected_train.type == "Cargo"
       print 'Введите общий объем вагона: '
       volume = gets.to_i
-      selected_train.wagons << CargoWagon.new(volume, add_manufacturer) 
+      selected_train.wagons << CargoWagon.new(volume, add_manufacturer, "Cargo") 
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
     end
   end
@@ -276,9 +276,9 @@ class Interface
           train.each_wagon do |wagon, index| 
             print "#{index}. Номер вагона: #{wagon.number} / Тип вагона: #{wagon.type} / "
             if wagon.type == 'Пассажирский'
-              print "Количество свободных / занятых мест в вагоне: #{wagon.free_places} / #{wagon.occupied_places}"
+              print "Количество свободных / занятых мест в вагоне: #{wagon.free} / #{wagon.occupied}"
             else
-              print "Свободный / занятый объем в вагоне: #{wagon.free_volume} / #{wagon.occupied_volume}"
+              print "Свободный / занятый объем в вагоне: #{wagon.free} / #{wagon.occupied}"
             end
             puts
           end
@@ -310,22 +310,22 @@ class Interface
     if selected_train.type == "Passenger"
       selected_train.each_wagon do |wagon, index| 
         print "#{index}. Номер вагона: #{wagon.number} /"
-        puts " Количество свободных / занятых мест в вагоне: #{wagon.free_places} / #{wagon.occupied_places}"
+        puts " Количество свободных / занятых мест в вагоне: #{wagon.free} / #{wagon.occupied}"
       end 
       print 'Выберите вагон: '
       number = gets.to_i
-      selected_train.wagons[number - 1].take_the_place_of
+      selected_train.wagons[number - 1].take
       puts 'Занято одно место в вагоне'
     else
       selected_train.each_wagon do |wagon, index| 
         print "#{index}. Номер вагона: #{wagon.number} /"
-        puts "Свободный / занятый объем в вагоне: #{wagon.free_volume} / #{wagon.occupied_volume}"
+        puts "Свободный / занятый объем в вагоне: #{wagon.free} / #{wagon.occupied}"
       end 
       print 'Выберите вагон: '
       number = gets.to_i
       print 'Введите объём который будет занят: '
       volume = gets.to_i
-      selected_train.wagons[number - 1].take_up_volume(volume)
+      selected_train.wagons[number - 1].take(volume)
     end
   end
 end
