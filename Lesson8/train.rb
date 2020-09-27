@@ -1,14 +1,16 @@
-require_relative 'manufacturer.rb'
-require_relative 'instance_counter.rb'
+require_relative 'manufacturer'
+require_relative 'instance_counter'
 
 # class Train
 class Train
   include Manufacturer
   include InstanceCounter
+
   attr_accessor :speed, :wagons
   attr_reader :type, :number, :company
+
   @@trains = {}
-  NUMBER_FORMAT = /^[A-Z1-9]{3}-?[A-Z1-9]{2}$/
+  NUMBER_FORMAT = /^[A-Z1-9]{3}-?[A-Z1-9]{2}$/.freeze
 
   def initialize(options = {})
     @number = options[:number]
@@ -37,16 +39,9 @@ class Train
     if @wagons.size.zero?
       puts 'у поезда нет созданных вагонов'
     else
-      wagons.each.with_index(1) { |wagon, index| yield(wagon, index) }
+      wagons.each.with_index(1) { |wagon, index| yield wagon, index }
     end
   end
-
-  # def valid?
-  #   validate!
-  #   true
-  # rescue StandardError => error
-  #   false
-  # end
 
   def validate!
     raise 'Номер не может быть пустым!' if number == ''

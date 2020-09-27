@@ -1,16 +1,16 @@
-#Управление железной дорогой
-require_relative 'train.rb'
+# Control railway
+
+require_relative 'train'
 require_relative 'passenger_train'
 require_relative 'cargo_train'
-require_relative 'route.rb'
-require_relative 'station.rb'
-require_relative 'wagon.rb'
-require_relative 'passenger_wagon.rb'
-require_relative 'cargo_wagon.rb'
+require_relative 'route'
+require_relative 'station'
+require_relative 'wagon'
+require_relative 'passenger_wagon'
+require_relative 'cargo_wagon'
 require 'byebug'
 
 class Interface
-    
   def initialize
     @stations = []
     @routes = []
@@ -18,7 +18,7 @@ class Interface
 
   puts
   puts '*' * 80
-  puts "Программа управлением железной дорогой"
+  puts 'Программа управлением железной дорогой'
   puts '*' * 80
 
   def run
@@ -48,7 +48,6 @@ class Interface
       when 9
         show_trains_on_station
       when 10
-        #byebug
         find_train
         press_enter_to_continue
       when 11
@@ -59,39 +58,39 @@ class Interface
       when 99
         break
       else
-        puts "Такого действия не существует"
+        puts 'Такого действия не существует'
       end
     end
   end
 
   protected
 
-  # Нет смысла обращаться к меню напрямую, оно все равно вызывается из другого метода и никогда напрямую
+  # Menu methods
   def menu
     puts
-    puts "1. Добавить станцию"
-    puts "2. Добавить поезд"
-    puts "3. Управление маштрутом"
-    puts "4. Назначить маршрут поезду"
-    puts "5. Добавить вагон к поезду"
-    puts "6. Отцепить вагон от поезда"
-    puts "7. Проехать на одну станцию вперед"
-    puts "8. Проехать на одну станцию назад"
-    puts "9. Вывести список станций, поездов и вагонов"
-    puts "10. Найти поезд по его номеру"
-    puts "11. Занять место в пассажирском или грузовом вагоне"
-    puts "99. Выйти из программы"
+    puts '1. Добавить станцию'
+    puts '2. Добавить поезд'
+    puts '3. Управление маштрутом'
+    puts '4. Назначить маршрут поезду'
+    puts '5. Добавить вагон к поезду'
+    puts '6. Отцепить вагон от поезда'
+    puts '7. Проехать на одну станцию вперед'
+    puts '8. Проехать на одну станцию назад'
+    puts '9. Вывести список станций, поездов и вагонов'
+    puts '10. Найти поезд по его номеру'
+    puts '11. Занять место в пассажирском или грузовом вагоне'
+    puts '99. Выйти из программы'
     puts
-    print "Выберите один из вариантов действий: "
+    print 'Выберите один из вариантов действий: '
   end
 
-  # Все следующие методы могут работать в секции private
+  # All next methods can work in section private
   def create_station
     print 'Введите название станции: '
     name = gets.chomp.strip.upcase
     @stations << Station.new(name)
-  rescue StandardError => error
-    puts "Error: #{error.message}"
+  rescue StandardError => e
+    puts "Error: #{e.message}"
     retry
   end
 
@@ -104,8 +103,8 @@ class Interface
 
   def create_train
     puts
-    puts "1. Пассажирский"
-    puts "2. Грузовой"
+    puts '1. Пассажирский'
+    puts '2. Грузовой'
     print 'Выберите тип поезда: '
     type = gets.to_i
 
@@ -119,18 +118,18 @@ class Interface
       menu
     end
     puts "Поезд #{number} успешно создан"
-  rescue StandardError => error
-    puts "Error: #{error.message}"
+  rescue StandardError => e
+    puts "Error: #{e.message}"
     retry
   end
 
   def add_train_number
-    print "Введите номер поезда: "
+    print 'Введите номер поезда: '
     number = gets.strip.upcase
   end
 
   def add_manufacturer
-    print "Введите производителя: "
+    print 'Введите производителя: '
     manufacturer = gets.strip
   end
 
@@ -147,9 +146,9 @@ class Interface
       change_route
     when 3
       menu
-    end 
+    end
   end
-  
+
   def show_stations
     @stations.each.with_index(1) do |station, index|
       puts "#{index}. #{station.name}"
@@ -158,11 +157,12 @@ class Interface
 
   def create_route
     raise 'Для того чтобы создать маршрут, необходимо как минимум 2 соданные станции' if @stations.size < 2
+
     station1 = select_station('Выберите начальную станцию: ')
     station2 = select_station('Выберите конечную станцию: ')
     @routes << Route.new(station1, station2)
-  rescue StandardError => error
-    puts "Error: #{error.message}"
+  rescue StandardError => e
+    puts "Error: #{e.message}"
   end
 
   def change_route
@@ -172,7 +172,7 @@ class Interface
     puts '3. Вернуться назад'
     print 'Выберите действие: '
     number = gets.to_i
-    menu if number == 0
+    menu if number.zero?
     case number
     when 1
       selected_station = select_station
@@ -192,16 +192,17 @@ class Interface
   end
 
   def show_trains
-    Train.trains.each_key.with_index(1) {|train, index| puts "#{index}. Номер поезда: #{train}"}
+    Train.trains.each_key.with_index(1) { |train, index| puts "#{index}. Номер поезда: #{train}" }
   end
 
   def add_route_to_train
     raise 'У вас нет ни одного созданного поезда или маршрута' if Train.trains.empty? || @routes.size.zero?
-    selected_train = select_train # Выбираем поезд
-    selected_route = select_route # Выбирем маршрут
+
+    selected_train = select_train # Select train
+    selected_route = select_route # Select route
     selected_train.route(selected_route)
-  rescue => error
-    puts "Error: #{error.message}"
+  rescue StandardError => e
+    puts "Error: #{e.message}"
   end
 
   def move_forward
@@ -220,29 +221,29 @@ class Interface
     number = gets.to_i
     select_train = Train.trains
     select_train = select_train.to_a
-    select_train = select_train[number - 1][1]
+    select_train[number - 1][1]
   end
 
   def select_route
     show_routes
     print 'Выберите машрут: '
     route = gets.to_i
-    select_route = @routes[route - 1]
+    @routes[route - 1]
   end
 
   def add_wagon
     selected_train = select_train
-    quantity_wagons = selected_train.wagons.size + 1
+    # quantity_wagons = selected_train.wagons.size + 1
 
-    if selected_train.type == "Passenger"
+    if selected_train.type == 'Passenger'
       print 'Введите общее коливество мест в вагоне: '
       places = gets.to_i
-      selected_train.wagons << PassengerWagon.new(total: places, company: add_manufacturer, type: "Passenger") 
+      selected_train.wagons << PassengerWagon.new(total: places, company: add_manufacturer, type: 'Passenger')
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
-    elsif selected_train.type == "Cargo"
+    elsif selected_train.type == 'Cargo'
       print 'Введите общий объем вагона: '
       volume = gets.to_i
-      selected_train.wagons << CargoWagon.new(total: volume, company: add_manufacturer, type: "Cargo") 
+      selected_train.wagons << CargoWagon.new(total: volume, company: add_manufacturer, type: 'Cargo')
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
     end
   end
@@ -250,11 +251,11 @@ class Interface
   def del_wagon
     selected_train = select_train
     quantity_wagons = selected_train.wagons.size
-   
+
     if quantity_wagons.zero?
-       puts "У этого поезда нет вагонов" 
+      puts 'У этого поезда нет вагонов'
     else
-      print "Удалить вагон? (Y/N) "
+      print 'Удалить вагон? (Y/N) '
       answer = gets.chomp.downcase
       selected_train.wagons.pop if answer == 'y'
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
@@ -262,36 +263,36 @@ class Interface
   end
 
   def show_trains_on_station
-    begin
-      raise 'У вас нет хотя бы одной созданной станции' if @stations.size.zero?
-      puts '*' * 80
-      puts
-      @stations.each.with_index(1) do |station, index| 
-        puts "#{index}. #{station.name}"
-        puts 'Поездов на станции: '
-        puts '-' * 80
-        station.each_train do |train, index| 
-          puts "#{index}. Номер поезда: #{train.number} / Тип поезда: #{train.type} / Количество вагонов: #{train.wagons.size}"
-          puts 'Список вагонов у поезда: '
-          train.each_wagon do |wagon, index| 
-            print "#{index}. Номер вагона: #{wagon.number} / Тип вагона: #{wagon.type} / "
-            if wagon.type == 'Пассажирский'
-              print "Количество свободных / занятых мест в вагоне: #{wagon.free} / #{wagon.occupied}"
-            else
-              print "Свободный / занятый объем в вагоне: #{wagon.free} / #{wagon.occupied}"
-            end
-            puts
+    raise 'У вас нет хотя бы одной созданной станции' if @stations.size.zero?
+
+    puts '*' * 80
+    puts
+    @stations.each.with_index(1) do |station, index|
+      puts "#{index}. #{station.name}"
+      puts 'Поездов на станции: '
+      puts '-' * 80
+      station.each_train do |train, index|
+        print "#{index}. Номер поезда: #{train.number} / Тип поезда: #{train.type}"
+        puts " / Количество вагонов: #{train.wagons.size}"
+        puts 'Список вагонов у поезда: '
+        train.each_wagon do |wagon, index|
+          print "#{index}. Номер вагона: #{wagon.number} / Тип вагона: #{wagon.type} / "
+          if wagon.type == 'Passenger'
+            print "Количество свободных / занятых мест в вагоне: #{wagon.free} / #{wagon.occupied}"
+          else
+            print "Свободный / занятый объем в вагоне: #{wagon.free} / #{wagon.occupied}"
           end
-        puts '-' * 80
+          puts
         end
-        puts
-        puts '*' * 80
+      puts '-' * 80
       end
       puts
-      press_enter_to_continue
-    rescue StandardError => error
-      puts "Error: #{error.message}"
+      puts '*' * 80
     end
+    puts
+    press_enter_to_continue
+  rescue StandardError => e
+    puts "Error: #{e.message}"
   end
 
   def find_train
@@ -301,26 +302,26 @@ class Interface
   end
 
   def press_enter_to_continue
-    print "Нажими любую клавишу, чтобы продложить..."
+    print 'Нажими любую клавишу, чтобы продложить...'
     gets
   end
 
   def add_place_or_volume_to_train
     selected_train = select_train
-    if selected_train.type == "Passenger"
-      selected_train.each_wagon do |wagon, index| 
+    if selected_train.type == 'Passenger'
+      selected_train.each_wagon do |wagon, index|
         print "#{index}. Номер вагона: #{wagon.number} /"
         puts " Количество свободных / занятых мест в вагоне: #{wagon.free} / #{wagon.occupied}"
-      end 
+      end
       print 'Выберите вагон: '
       number = gets.to_i
       selected_train.wagons[number - 1].take
       puts 'Занято одно место в вагоне'
     else
-      selected_train.each_wagon do |wagon, index| 
+      selected_train.each_wagon do |wagon, index|
         print "#{index}. Номер вагона: #{wagon.number} /"
         puts "Свободный / занятый объем в вагоне: #{wagon.free} / #{wagon.occupied}"
-      end 
+      end
       print 'Выберите вагон: '
       number = gets.to_i
       print 'Введите объём который будет занят: '
