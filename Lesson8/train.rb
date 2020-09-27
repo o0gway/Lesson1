@@ -1,6 +1,7 @@
 require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
 
+# class Train
 class Train
   include Manufacturer
   include InstanceCounter
@@ -24,19 +25,19 @@ class Train
     @@trains
   end
 
-  def self.find(number) 
+  def self.find(number)
     if @@trains[number]
       puts 'Поезд найден'
     else
       puts 'Поезд не найден'
-    end 
+    end
   end
 
   def each_wagon
     if @wagons.size.zero?
       puts 'у поезда нет созданных вагонов'
-    else 
-      wagons.each.with_index(1) {|wagon, index| yield(wagon, index)}
+    else
+      wagons.each.with_index(1) { |wagon, index| yield(wagon, index) }
     end
   end
 
@@ -50,7 +51,7 @@ class Train
   def validate!
     raise 'Номер не может быть пустым!' if number == ''
     raise 'Не правильный формат номера!' if number !~ NUMBER_FORMAT
-    raise 'Название производителя не может быть пустым!' if company == ''     
+    raise 'Название производителя не может быть пустым!' if company == ''
   end
 
   def stop
@@ -58,32 +59,32 @@ class Train
   end
 
   def stoped?
-    @speed == 0
-  end  
+    speed.zero?
+  end
 
   def route(route)
     @route = route.stations
     @current_station = 0
     @route[@current_station].arrival(self)
-  end 
+  end
 
   def current_station
-    puts "Предыдущая станция: #{self.back_station.station_name}" if first_station? 
+    puts "Предыдущая станция: #{back_station.station_name}" if first_station?
     puts "Текущая станция: #{@route[@current_station].station_name}"
-    puts "Следующая станция: #{self.next_station.station_name}" if last_station?
+    puts "Следующая станция: #{next_station.station_name}" if last_station?
   end
 
   def forward
     @route[@current_station].send_train(self)
     @route[@current_station + 1].arrival(self)
-    puts "Поезд проехал одну станцию вперед"
+    puts 'Поезд проехал одну станцию вперед'
     @current_station += 1
   end
 
   def back
     @route[@current_station].send_train(self)
     @route[@current_station - 1].arrival(self)
-    puts "Поезд проехал одну станцию назад"
+    puts 'Поезд проехал одну станцию назад'
     @current_station -= 1
   end
 
@@ -95,14 +96,14 @@ class Train
     @route[@current_station - 1]
   end
 
-  private 
+  private
 
-  # Используются только в этом классе
+  # Uses only this class
   def last_station?
-    @route.index(@route.stations[@current_station]) != -1 && @route[@current_station + 1] != nil
+    @route.index(@route.stations[@current_station]) != -1 && !@route[@current_station + 1].nil?
   end
 
   def first_station?
-    @route.index(@route[@current_station]) != 0 && @route[@current_station - 1] != nil
+    @route.index(@route[@current_station]) != 0 && !@route[@current_station - 1].nil?
   end
 end
