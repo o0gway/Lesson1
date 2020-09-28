@@ -5,10 +5,10 @@ module InstanceCounter
   end
 
   module ClassMethods
-    attr_accessor :object_list
+    attr_writer :instances
 
     def instances
-      @object_list ||= 0
+      @instances ||= 0
     end
   end
 
@@ -17,14 +17,15 @@ module InstanceCounter
       validate!
       true
     rescue StandardError => e
+      puts e
       false
     end
 
     protected
 
     def register_instance
-      self.class.object_list ||= 0
-      self.class.object_list += 1
+      self.class.instances ||= 0
+      self.class.instances += 1
     end
   end
 end

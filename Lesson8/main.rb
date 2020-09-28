@@ -110,9 +110,10 @@ class Interface
 
     number = add_train_number
 
-    if type == 1
+    case type
+    when 1
       PassengerTrain.new(number: number, type: 'Passenger', company: add_manufacturer)
-    elsif type == 2
+    when 2
       CargoTrain.new(number: number, type: 'Cargo', company: add_manufacturer)
     else
       menu
@@ -125,12 +126,14 @@ class Interface
 
   def add_train_number
     print 'Введите номер поезда: '
-    number = gets.strip.upcase
+    # number =
+    gets.strip.upcase
   end
 
   def add_manufacturer
     print 'Введите производителя: '
-    manufacturer = gets.strip
+    # manufacturer =
+    gets.strip
   end
 
   def manage_route
@@ -161,6 +164,7 @@ class Interface
     station1 = select_station('Выберите начальную станцию: ')
     station2 = select_station('Выберите конечную станцию: ')
     @routes << Route.new(station1, station2)
+    puts "Маршрут #{station1.name}-->#{station2.name} успешно создан"
   rescue StandardError => e
     puts "Error: #{e.message}"
   end
@@ -187,7 +191,7 @@ class Interface
 
   def show_routes
     @routes.each.with_index(1) do |route, index|
-      puts "#{index}. #{route.stations.first.name} --> #{route.stations.last.name}"
+      puts "#{index}. #{route.stations.first.name}-->#{route.stations.last.name}"
     end
   end
 
@@ -199,7 +203,11 @@ class Interface
     raise 'У вас нет ни одного созданного поезда или маршрута' if Train.trains.empty? || @routes.size.zero?
 
     selected_train = select_train # Select train
+    # raise 'Вы выбрали несуществующий поезд' if selected_train.empty?
+
     selected_route = select_route # Select route
+    raise 'Вы выбрали несуществующий марштрут' if selected_route.nil?
+
     selected_train.route(selected_route)
   rescue StandardError => e
     puts "Error: #{e.message}"
@@ -233,14 +241,14 @@ class Interface
 
   def add_wagon
     selected_train = select_train
-    # quantity_wagons = selected_train.wagons.size + 1
 
-    if selected_train.type == 'Passenger'
+    case selected_train.type
+    when 'Passenger'
       print 'Введите общее коливество мест в вагоне: '
       places = gets.to_i
       selected_train.wagons << PassengerWagon.new(total: places, company: add_manufacturer, type: 'Passenger')
       puts "Количество вагонов в поезде: #{selected_train.wagons.size}"
-    elsif selected_train.type == 'Cargo'
+    when 'Cargo'
       print 'Введите общий объем вагона: '
       volume = gets.to_i
       selected_train.wagons << CargoWagon.new(total: volume, company: add_manufacturer, type: 'Cargo')
@@ -284,7 +292,7 @@ class Interface
           end
           puts
         end
-      puts '-' * 80
+        puts '-' * 80
       end
       puts
       puts '*' * 80
