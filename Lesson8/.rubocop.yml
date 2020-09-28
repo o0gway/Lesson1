@@ -3,8 +3,11 @@ AllCops:
   Exclude:
     - './test.rb'
 
-# Metrics/LineLength:
-#   Max: 120
+Layout/LineLength:
+  Max: 120
+
+Style/AsciiComments:
+  Enabled: false
 
 Style/FrozenStringLiteralComment:
   Enabled: false
