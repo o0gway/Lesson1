@@ -203,14 +203,13 @@ class Interface
     raise 'У вас нет ни одного созданного поезда или маршрута' if Train.trains.empty? || @routes.size.zero?
 
     selected_train = select_train # Select train
-    # raise 'Вы выбрали несуществующий поезд' if selected_train.empty?
-
     selected_route = select_route # Select route
     raise 'Вы выбрали несуществующий марштрут' if selected_route.nil?
 
     selected_train.route(selected_route)
   rescue StandardError => e
     puts "Error: #{e.message}"
+    retry
   end
 
   def move_forward
@@ -229,7 +228,11 @@ class Interface
     number = gets.to_i
     select_train = Train.trains
     select_train = select_train.to_a
-    select_train[number - 1][1]
+    if select_train[number - 1].nil?
+      raise 'Вы выбрали несуществующий поезд'
+    else
+      select_train[number - 1][1]
+    end
   end
 
   def select_route
