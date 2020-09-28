@@ -228,10 +228,8 @@ class Interface
     number = gets.to_i
     select_train = Train.trains
     select_train = select_train.to_a
-    if select_train[number - 1].nil?
-      raise 'Вы выбрали несуществующий поезд'
-    else
-      select_train[number - 1][1]
+    raise 'Вы выбрали несуществующий поезд' if select_train[number - 1].nil?
+    select_train[number - 1][1]
     end
   end
 
