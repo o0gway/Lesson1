@@ -230,7 +230,6 @@ class Interface
     select_train = select_train.to_a
     raise 'Вы выбрали несуществующий поезд' if select_train[number - 1].nil?
     select_train[number - 1][1]
-    end
   end
 
   def select_route
