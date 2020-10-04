@@ -7,19 +7,17 @@ module Validation
 
   module ClassMethods
 
-    def validations
-      class_variable_get :@@validations
-    end
+  attr_reader :validations
 
     def validate(validation_type, value, validation_format = "")
-      validations[validation_type] = value
-      @format = validation_format
+      @validations ||= []
+      @validations << [validation_type, value, validation_format]
     end
   end
 
   module InstanceMethods
     def validate!
-      self.class.class_variable_get("@@validations").each do |type, value|
+      self.class.class_variable_get("@validations").each do |type, value|
         send type, value
       end
       true
@@ -38,12 +36,12 @@ module Validation
       raise "Значение атрибута не должно быть nil или пустой строкой" if val.nil? || val == ""
     end
 
-    def format(var)
-      raise "Неверный формат" if var !~ @format
+    def format(val, format)
+      raise "Неверный формат" if val !~ format
     end
 
-    def type(var)
-      raise "Неверный класс" unless var.class == @format
+    def type(var, type)
+      raise "Неверный класс" unless val.kind_of?(type)
     end
   end
 end
