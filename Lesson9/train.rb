@@ -21,7 +21,6 @@ class Train
 
   @@trains = {}
 
-
   def initialize(options = {})
     @number = options[:number]
     validate!

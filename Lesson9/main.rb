@@ -48,7 +48,7 @@ class Interface
       when 9
         show_trains_on_station
       when 10
-        byebug
+        # byebug
         find_train
         press_enter_to_continue
       when 11
@@ -230,6 +230,7 @@ class Interface
     select_train = Train.trains
     select_train = select_train.to_a
     raise 'Вы выбрали несуществующий поезд' if select_train[number - 1].nil?
+
     select_train[number - 1][1]
   end
 

@@ -28,7 +28,8 @@ module Accessors
     def strong_attr_accessor(method, name_class)
       define_method(method) { instance_variable_get("@#{method}") }
       define_method("#{method}=") do |value|
-        raise "Неправильный класс у переменной" if !value.kind_of?(name_class)
+        raise 'Неправильный класс у переменной' unless value.is_a?(name_class)
+
         instance_variable_set("@#{method}", value)
       end
     end

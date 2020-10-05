@@ -1,15 +1,14 @@
 module Validation
   def self.included(base)
-    self.class_variable_set :@@validations, Hash.new
+    # self.class_variable_set :@@validations, Hash.new
     base.extend ClassMethods
     base.include InstanceMethods
   end
 
   module ClassMethods
+    attr_reader :validations
 
-  attr_reader :validations
-
-    def validate(validation_type, value, validation_format = "")
+    def validate(validation_type, value, validation_format = '')
       @validations ||= []
       @validations << [validation_type, value, validation_format]
     end
@@ -17,7 +16,7 @@ module Validation
 
   module InstanceMethods
     def validate!
-      self.class.class_variable_get("@validations").each do |type, value|
+      self.class.validations.each do |type, value|
         send type, value
       end
       true
@@ -33,15 +32,15 @@ module Validation
     private
 
     def presence(val)
-      raise "Значение атрибута не должно быть nil или пустой строкой" if val.nil? || val == ""
+      raise 'Значение атрибута не должно быть nil или пустой строкой' if val.nil? || val == ''
     end
 
     def format(val, format)
-      raise "Неверный формат" if val !~ format
+      raise 'Неверный формат' if val !~ format
     end
 
-    def type(var, type)
-      raise "Неверный класс" unless val.kind_of?(type)
+    def type(val, type)
+      raise 'Неверный класс' unless val.is_a?(type)
     end
   end
 end
