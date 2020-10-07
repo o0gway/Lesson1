@@ -8,38 +8,39 @@ module Validation
   module ClassMethods
     attr_reader :validations
 
-    def validate(validation_type, value, validation_format = '')
+    def validate(value, type, options = '')
       @validations ||= []
-      @validations << [validation_type, value, validation_format]
+      @validations << {attr: value, type: type, options: options}
     end
   end
 
   module InstanceMethods
     def validate!
-      self.class.validations.each do |type, value|
-        send type, value
+      self.class.validations.each do |element|
+        value = instance_variable_get("@#{element[:attr]}")
+        type = element[:type]
+        options = element[:options]
+        send(value, type, options)
       end
-      true
     end
 
     def valid?
       validate!
     rescue RuntimeError => e
-      puts e.message
       false
     end
 
     private
 
-    def presence(val)
+    def validate_presence(val)
       raise 'Значение атрибута не должно быть nil или пустой строкой' if val.nil? || val == ''
     end
 
-    def format(val, format)
+    def validate_format(val, format)
       raise 'Неверный формат' if val !~ format
     end
 
-    def type(val, type)
+    def validate_type(val, type)
       raise 'Неверный класс' unless val.is_a?(type)
     end
   end

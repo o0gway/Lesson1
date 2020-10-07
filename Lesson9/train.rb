@@ -23,6 +23,7 @@ class Train
 
   def initialize(options = {})
     @number = options[:number]
+    byebug
     validate!
     @type = options[:type]
     @company = options[:company]
@@ -52,11 +53,11 @@ class Train
     end
   end
 
-  def validate!
-    raise 'Номер не может быть пустым!' if number == ''
-    raise 'Не правильный формат номера!' if number !~ NUMBER_FORMAT
-    raise 'Название производителя не может быть пустым!' if company == ''
-  end
+  # def validate!
+  #   raise 'Номер не может быть пустым!' if number == ''
+  #   raise 'Не правильный формат номера!' if number !~ NUMBER_FORMAT
+  #   raise 'Название производителя не может быть пустым!' if company == ''
+  # end
 
   def stop
     @speed = 0
