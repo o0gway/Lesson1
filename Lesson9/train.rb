@@ -23,11 +23,10 @@ class Train
 
   def initialize(options = {})
     @number = options[:number]
-    byebug
+    # byebug
     validate!
     @type = options[:type]
     @company = options[:company]
-    validate!
     @wagons = []
     @@trains[number] = self
     register_instance

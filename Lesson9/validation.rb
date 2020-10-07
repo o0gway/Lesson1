@@ -17,20 +17,20 @@ module Validation
   module InstanceMethods
     def validate!
       self.class.validations.each do |element|
+        attr, type, options = element
         value = instance_variable_get("@#{element[:attr]}")
-        type = element[:type]
-        options = element[:options]
-        send(value, type, options)
+        send("validate_#{element[:type]}", value, element[:options])
       end
     end
 
     def valid?
       validate!
+      true
     rescue RuntimeError => e
       false
     end
 
-    private
+    protected
 
     def validate_presence(val)
       raise 'Значение атрибута не должно быть nil или пустой строкой' if val.nil? || val == ''
