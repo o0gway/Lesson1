@@ -209,7 +209,6 @@ class Interface
     selected_train.route(selected_route)
   rescue StandardError => e
     puts "Error: #{e.message}"
-    retry
   end
 
   def move_forward
